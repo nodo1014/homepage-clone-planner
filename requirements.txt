@@ -1,0 +1,63 @@
+# 웹 프레임워크
+fastapi==0.108.0
+uvicorn==0.25.0
+python-multipart==0.0.6
+Jinja2==3.1.2
+
+# HTML 분석
+beautifulsoup4==4.12.2
+requests==2.31.0
+
+# 마크다운 변환
+Markdown==3.5.1
+# markdown2>=2.4.8  # markdown 패키지로 대체
+
+# 내보내기 도구
+python-pptx>=0.6.21
+openpyxl>=3.1.2
+weasyprint>=65.0  # PDF 생성
+
+# API 통합
+openai==1.13.3
+anthropic>=0.5.0
+# deepseek-api>=0.0.1  # 공식 패키지 이름 확인 필요
+
+aiohttp==3.9.1  # 비동기 HTTP 클라이언트 (OpenAI 등)
+tiktoken==0.5.2  # OpenAI 토큰화
+
+# 이메일 및 외부 서비스
+aiosmtplib>=2.0.0  # 비동기 이메일 전송
+notion-client>=2.0.0  # 노션 API 공식 클라이언트
+google-auth>=2.23.0  # 구글 인증
+google-auth-oauthlib>=1.0.0  # 구글 OAuth 인증
+google-api-python-client>=2.100.0  # 구글 API 클라이언트
+
+# 환경 변수 및 보안
+python-dotenv==1.0.0
+keyring>=24.0.0
+keyrings.alt>=4.2.0  # keyring 백엔드 fallback
+cryptography>=41.0.0
+
+# 유틸리티
+pillow>=10.0.0  # 이미지 처리
+colorama>=0.4.6  # 색상 처리
+tqdm>=4.66.0  # 진행률 표시
+pydantic>=2.0.0  # 데이터 검증
+tabulate>=0.9.0  # 테이블 형식 출력
+
+# 스케줄러/DB/ORM
+apscheduler==3.11.0
+sqlalchemy==2.0.40
+alembic==1.13.1
+
+# 테스트
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2
+
+# 기타(선택/실험)
+# httpx-html==0.4.1  # 실험적 HTML 파싱
+# dynaconf==3.2.4    # 설정 관리(미사용)
+# langchain==0.0.350 # LLM 워크플로우(미사용)
+# sd-webui-api>=0.0.1  # Stable Diffusion WebUI API
+# ollama-python>=0.0.1  # Ollama API 클라이언트 

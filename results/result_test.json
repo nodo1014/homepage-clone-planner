@@ -1,0 +1,61 @@
+{
+  "title": "테스트 웹사이트 기획서",
+  "url": "https://www.example.com",
+  "created_at": "2025-05-20T10:30:00Z",
+  "website": {
+    "name": "테스트 웹사이트",
+    "url": "https://www.example.com",
+    "description": "테스트 설명입니다. 이 웹사이트는 통합 테스트를 위한 가상의 웹사이트입니다."
+  },
+  "metadata": {
+    "title": "테스트 웹사이트",
+    "description": "테스트 설명입니다.",
+    "keywords": ["테스트", "예시", "샘플"],
+    "favicon": "https://www.example.com/favicon.ico",
+    "language": "ko"
+  },
+  "design_analysis": {
+    "colors": [
+      {"hex": "#FF0000", "usage": "primary"},
+      {"hex": "#00FF00", "usage": "secondary"},
+      {"hex": "#0000FF", "usage": "accent"},
+      {"color": "white", "usage": "background"}
+    ],
+    "typography": "기본 글꼴 스타일은 'Arial', 'Helvetica'를 사용합니다.",
+    "layout": {
+      "type": "responsive",
+      "grid": "12-column",
+      "breakpoints": ["576px", "768px", "992px", "1200px"]
+    },
+    "components": [
+      {"name": "헤더", "description": "고정 위치 탐색 메뉴"},
+      {"name": "푸터", "description": "사이트 정보 및 링크 섹션"},
+      {"name": "카드", "description": "콘텐츠 표시를 위한 카드 컴포넌트"},
+      {"name": "버튼", "description": "기본 및 강조 버튼 스타일"}
+    ]
+  },
+  "structure_analysis": {
+    "menu": [
+      {"title": "홈", "url": "/", "has_submenu": false},
+      {"title": "소개", "url": "/about", "has_submenu": false},
+      {"title": "서비스", "url": "/services", "has_submenu": true},
+      {"title": "문의", "url": "/contact", "has_submenu": false}
+    ],
+    "pages": [
+      {"url": "/", "title": "홈", "components": ["배너", "카드 섹션", "호출 액션"]},
+      {"url": "/about", "title": "소개", "components": ["회사 소개", "팀원 소개"]},
+      {"url": "/services", "title": "서비스", "components": ["서비스 목록", "가격표"]},
+      {"url": "/contact", "title": "문의", "components": ["연락처 정보", "문의 양식"]}
+    ]
+  },
+  "ai_analysis": {
+    "design_insights": "웹사이트는 현대적인 디자인 원칙을 따르고 있으며, 가독성이 좋습니다.",
+    "functional_insights": "사용자 경험이 직관적이며, 탐색 구조가 명확합니다.",
+    "recommendations": [
+      "모바일 최적화를 더 개선하세요.",
+      "페이지 로딩 속도를 높이기 위해 이미지 최적화를 고려하세요.",
+      "접근성 기능을 추가하여 더 넓은 사용자층에 대응하세요."
+    ]
+  },
+  "development_recommendations": "React나 Next.js를 기반으로 개발하는 것이 권장됩니다. 반응형 디자인을 위해 CSS Grid나 Flexbox를 활용하세요."
+} 

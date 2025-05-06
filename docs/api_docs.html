@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+            <html lang="ko">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>홈페이지 클론 기획서 생성기 API 문서</title>
+                <style>
+                
+                body {
+                    font-family: 'Noto Sans KR', Arial, sans-serif;
+                    line-height: 1.6;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    color: #333;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    margin-top: 1.5em;
+                    margin-bottom: 0.5em;
+                    color: #1a1a1a;
+                }
+                h1 { font-size: 2.2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+                h2 { font-size: 1.8em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+                h3 { font-size: 1.5em; }
+                h4 { font-size: 1.3em; }
+                table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+                th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                pre { background-color: #f5f5f5; padding: 1em; overflow-x: auto; border-radius: 3px; }
+                code { background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; }
+                hr { border: 0; border-top: 1px solid #eee; margin: 2em 0; }
+                a { color: #0366d6; text-decoration: none; }
+                a:hover { text-decoration: underline; }
+                .container { display: flex; flex-direction: row; }
+                .toc { position: sticky; top: 20px; width: 250px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 20px; }
+                .content { flex: 1; }
+                @media (max-width: 768px) {
+                    .container { flex-direction: column; }
+                    .toc { width: 100%; position: relative; }
+                }
+                
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="content">
+                        <h1>홈페이지 클론 기획서 생성기 API 문서</h1>
+<p>FastAPI 애플리케이션의 API 문서입니다.</p>
+<p>API 버전: 0.1.0</p>
+<h2>목차</h2>
+<ul>
+<li><a href="#기본">기본</a></li>
+</ul>
+<h2>기본</h2>
+<h3>GET /</h3>
+<p><strong>요약:</strong> Index</p>
+<p>메인 페이지 - URL 입력 화면</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /ai-interface</h3>
+<p><strong>요약:</strong> Ai Interface</p>
+<p>AI 개발자를 위한 인터페이스 - API 문서 및 예시</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<hr />
+<h3>POST /analyze</h3>
+<p><strong>요약:</strong> Analyze</p>
+<p>웹사이트 분석 시작</p>
+<h4>요청 본문</h4>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/x-www-form-urlencoded</code></p>
+</li>
+<li>
+<p><strong>필수 여부:</strong> 필수</p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/Body_analyze_analyze_post&quot;
+}
+</code></pre>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /analyze/status/{task_id}</h3>
+<p><strong>요약:</strong> Analyze Status</p>
+<p>분석 진행 상태 확인</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| task_id | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /api/docs</h3>
+<p><strong>요약:</strong> Api Docs Html</p>
+<p>API 문서를 HTML 형식으로 제공합니다.</p>
+<p>이 엔드포인트는 애플리케이션의 모든 API 엔드포인트에 대한 문서를 HTML 형식으로 생성하고 표시합니다.
+각 엔드포인트의 경로, 메서드, 매개변수, 응답 형식 등의 상세 정보를 포함합니다.</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /api/docs/md</h3>
+<p><strong>요약:</strong> Api Docs Markdown</p>
+<p>API 문서를 마크다운 형식으로 다운로드합니다.</p>
+<p>이 엔드포인트는 애플리케이션의 모든 API 엔드포인트에 대한 문서를 마크다운 형식으로 생성하고 다운로드합니다.</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<hr />
+<h3>GET /api/docs/regenerate</h3>
+<p><strong>요약:</strong> Regenerate Api Docs</p>
+<p>API 문서를 강제로 다시 생성합니다.</p>
+<p>이 엔드포인트는 HTML과 마크다운 형식의 API 문서를 강제로 새로 생성합니다.
+개발 중에 API가 변경되었을 때 사용할 수 있습니다.</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<hr />
+<h3>GET /api/schema</h3>
+<p><strong>요약:</strong> Api Schema</p>
+<p>API 스키마 및 구조 정보</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<hr />
+<h3>GET /api/structure/{task_id}</h3>
+<p><strong>요약:</strong> Get Structure</p>
+<p>웹사이트 구조 메타데이터 제공</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| task_id | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /download/{result_id}/{type}</h3>
+<p><strong>요약:</strong> Download Results</p>
+<p>결과 다운로드</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| result_id | path | string | ✓ |  |</p>
+<p>| type | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /export/{result_id}/{format_type}</h3>
+<p><strong>요약:</strong> Export Results</p>
+<p>분석 결과를 지정한 형식으로 내보내기</p>
+<p>Args:
+    result_id (str): 결과 ID
+    format_type (str): 내보내기 형식 (markdown, html, pdf, pptx, json, zip, notion, gdrive)</p>
+<p>Returns:
+    각 형식에 맞는 응답:
+    - notion: JSONResponse (노션 페이지 URL 반환)
+    - gdrive: JSONResponse (구글 드라이브 URL 반환)
+    - 그 외: RedirectResponse (다운로드 URL로 리다이렉트)</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| result_id | path | string | ✓ |  |</p>
+<p>| format_type | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /results/{result_id}</h3>
+<p><strong>요약:</strong> View Results</p>
+<p>분석 결과 보기</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| result_id | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>POST /send-email/{result_id}</h3>
+<p><strong>요약:</strong> Send Email Results</p>
+<p>분석 결과를 이메일로 전송</p>
+<p>Args:
+    result_id (str): 결과 ID
+    email (str): 수신자 이메일 주소
+    background_tasks (BackgroundTasks): 백그라운드 태스크</p>
+<p>Returns:
+    JSONResponse: 이메일 전송 성공/실패 응답</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| result_id | path | string | ✓ |  |</p>
+<h4>요청 본문</h4>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/x-www-form-urlencoded</code></p>
+</li>
+<li>
+<p><strong>필수 여부:</strong> 필수</p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/Body_send_email_results_send_email__result_id__post&quot;
+}
+</code></pre>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+<h3>GET /settings</h3>
+<p><strong>요약:</strong> Settings Page</p>
+<p>API 설정 페이지</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>text/html</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;string&quot;
+}
+</code></pre>
+<hr />
+<h3>POST /settings/save</h3>
+<p><strong>요약:</strong> Save Settings</p>
+<p>API 설정 저장</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<hr />
+<h3>GET /settings/test/{api_type}</h3>
+<p><strong>요약:</strong> Test Api</p>
+<p>API 키 유효성 테스트</p>
+<h4>매개변수</h4>
+<p>| 이름 | 위치 | 타입 | 필수 | 설명 |</p>
+<p>|------|------|------|------|------|</p>
+<p>| api_type | path | string | ✓ |  |</p>
+<h4>응답</h4>
+<h5>200 - Successful Response</h5>
+<ul>
+<li><strong>미디어 타입:</strong> <code>application/json</code></li>
+</ul>
+<h5>422 - Validation Error</h5>
+<ul>
+<li>
+<p><strong>미디어 타입:</strong> <code>application/json</code></p>
+</li>
+<li>
+<p><strong>스키마:</strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+}
+</code></pre>
+<hr />
+                    </div>
+                </div>
+                
+                <script>
+                // 코드 하이라이팅 기능 추가
+                document.addEventListener('DOMContentLoaded', function() {
+                    var pres = document.querySelectorAll('pre');
+                    for (var i = 0; i < pres.length; i++) {
+                        var pre = pres[i];
+                        pre.style.position = 'relative';
+                        
+                        // 복사 버튼 추가
+                        var copyBtn = document.createElement('button');
+                        copyBtn.textContent = '복사';
+                        copyBtn.style.position = 'absolute';
+                        copyBtn.style.right = '5px';
+                        copyBtn.style.top = '5px';
+                        copyBtn.style.fontSize = '12px';
+                        copyBtn.style.padding = '3px 8px';
+                        copyBtn.style.border = 'none';
+                        copyBtn.style.borderRadius = '3px';
+                        copyBtn.style.backgroundColor = '#0366d6';
+                        copyBtn.style.color = 'white';
+                        copyBtn.style.cursor = 'pointer';
+                        
+                        copyBtn.addEventListener('click', function(e) {
+                            var code = this.parentElement.querySelector('code');
+                            var range = document.createRange();
+                            range.selectNode(code);
+                            window.getSelection().removeAllRanges();
+                            window.getSelection().addRange(range);
+                            document.execCommand('copy');
+                            window.getSelection().removeAllRanges();
+                            
+                            this.textContent = '복사됨!';
+                            setTimeout(function(btn) {
+                                btn.textContent = '복사';
+                            }, 2000, this);
+                        });
+                        
+                        pre.appendChild(copyBtn);
+                    }
+                });
+                </script>
+            </body>
+            </html>
+            

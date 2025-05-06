@@ -1,0 +1,251 @@
+/* 홈페이지 클론 기획서 생성기 - 커스텀 스타일 */
+
+/* 메인 컨테이너 높이 조정 */
+main.container {
+    min-height: 70vh;
+    padding: 2rem 1rem;
+}
+
+/* 메시지 스타일 */
+.message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.message.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+.message.info {
+    background-color: #cff4fc;
+    color: #055160;
+    border: 1px solid #b6effb;
+}
+
+.message.warning {
+    background-color: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffecb5;
+}
+
+/* 카드 스타일 */
+.card {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    margin-bottom: 1.5rem;
+}
+
+/* 메인 폼 스타일 */
+.main-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* 프로그레스 바 스타일 */
+.progress-container {
+    width: 100%;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+    margin: 1rem 0;
+}
+
+.progress-bar {
+    height: 10px;
+    border-radius: 0.25rem;
+    background-color: #3949ab;
+    transition: width 0.3s ease;
+}
+
+/* 분석 상태 컨테이너 */
+.status-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+/* 결과 탭 컨테이너 */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tab {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    margin-bottom: -1px;
+}
+
+.tab.active {
+    color: #3949ab;
+    border-color: #dee2e6 #dee2e6 #fff;
+    background-color: #fff;
+}
+
+.tab-content {
+    display: none;
+    padding: 1rem 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* 색상 팔레트 표시 */
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.color-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 0.25rem;
+    border: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 0.75rem;
+    padding-bottom: 0.25rem;
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+/* 목업 이미지 컨테이너 */
+.mockup-container {
+    margin: 1.5rem 0;
+}
+
+.mockup-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+/* 설정 토글 스타일 */
+.api-setting {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+/* 로딩 애니메이션 */
+.loading {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3949ab;
+    border-radius: 50%;
+    animation: spinner 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+    .main-form {
+        padding: 1rem;
+    }
+    
+    .tabs {
+        flex-direction: column;
+    }
+    
+    .tab {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* AI 인사이트 스타일 */
+.ai-insights {
+    background-color: #f0f8ff;
+    border-left: 3px solid #3949ab;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.ai-insights ul, .ai-insights ol {
+    margin-left: 1rem;
+}
+
+.ai-insights p {
+    margin-bottom: 0.5rem;
+}
+
+.ai-insights strong {
+    color: #3949ab;
+}
+
+.ai-insights::before {
+    content: "AI 분석";
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #3949ab;
+    display: block;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 접근성 분석 스타일 */
+.accessibility-analysis {
+    margin: 1.5rem 0;
+}
+
+.accessibility-analysis .progress-container {
+    height: 15px;
+    margin-bottom: 0.5rem;
+}
+
+.accessibility-analysis .progress-bar {
+    height: 15px;
+}
+
+.accessibility-analysis ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.accessibility-analysis li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.accessibility-analysis h4 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #3949ab;
+} 

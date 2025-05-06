@@ -1,0 +1,444 @@
+{
+  "version": 48,
+  "last_updated": "2025-05-07T04:01:16.005667",
+  "applied_migrations": [
+    "migration_0003_20250507011435",
+    "migration_0043_20250507031222",
+    "migration_0046_20250507032156",
+    "migration_0036_20250507024451",
+    "migration_0040_20250507031100",
+    "migration_0034_20250507024354",
+    "migration_0042_20250507031107",
+    "migration_0006_20250507012608",
+    "migration_0023_20250507021443",
+    "migration_0041_20250507031106",
+    "migration_0019_20250507021417",
+    "migration_0015_20250507015945",
+    "migration_0011_20250507015908",
+    "migration_0028_20250507021559",
+    "migration_0044_20250507032151",
+    "migration_0016_20250507020543",
+    "migration_0009_20250507015904",
+    "migration_0012_20250507015925",
+    "migration_0045_20250507032155",
+    "migration_0018_20250507020558",
+    "migration_0013_20250507015927",
+    "migration_0022_20250507021442",
+    "migration_0027_20250507021545",
+    "migration_0037_20250507030530",
+    "migration_0031_20250507022114",
+    "migration_0035_20250507024358",
+    "migration_0004_20250507011448",
+    "migration_0038_20250507030531",
+    "migration_0048_20250507040116",
+    "migration_0002_20250507011435",
+    "migration_0032_20250507023237",
+    "migration_0030_20250507021603",
+    "migration_0020_20250507021420",
+    "migration_0021_20250507021440",
+    "migration_0005_20250507012556",
+    "migration_0039_20250507030536",
+    "migration_0007_20250507014836",
+    "migration_0029_20250507021602",
+    "migration_0025_20250507021541",
+    "migration_0047_20250507032448",
+    "migration_0008_20250507015501",
+    "migration_0010_20250507015907",
+    "migration_0026_20250507021544",
+    "migration_0014_20250507015928",
+    "migration_0033_20250507024351",
+    "migration_0017_20250507020544",
+    "migration_0024_20250507021532",
+    "migration_0001_20250507011434"
+  ],
+  "schemas": {
+    "APIUsage": {
+      "tablename": "api_usage",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "date",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fe3b0>)",
+          "primary_key": false
+        },
+        {
+          "name": "api_type",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "endpoint",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "tokens_in",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(0)",
+          "primary_key": false
+        },
+        {
+          "name": "tokens_out",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(0)",
+          "primary_key": false
+        },
+        {
+          "name": "cost",
+          "type": "FLOAT",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(0.0)",
+          "primary_key": false
+        },
+        {
+          "name": "task_id",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ]
+    },
+    "AnalysisResult": {
+      "tablename": "analysis_results",
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "task_id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "url",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "plan_text",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "design_analysis",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "components_json",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "pages_json",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fd7e0>)",
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fd900>)",
+          "primary_key": false
+        },
+        {
+          "name": "exported",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(False)",
+          "primary_key": false
+        }
+      ]
+    },
+    "ExportHistory": {
+      "tablename": "export_history",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "result_id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "format_type",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "file_path",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "external_url",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fde10>)",
+          "primary_key": false
+        }
+      ]
+    },
+    "Task": {
+      "tablename": "tasks",
+      "columns": [
+        {
+          "name": "id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "url",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "progress",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": "ScalarElementColumnDefault(0)",
+          "primary_key": false
+        },
+        {
+          "name": "message",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "error",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "result_id",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fc550>)",
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fc5e0>)",
+          "primary_key": false
+        }
+      ]
+    },
+    "TaskStep": {
+      "tablename": "task_steps",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "task_id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "step_index",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "message",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fcaf0>)",
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fcca0>)",
+          "primary_key": false
+        }
+      ]
+    },
+    "WebsiteData": {
+      "tablename": "website_data",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "task_id",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "main_url",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "pages_count",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(0)",
+          "primary_key": false
+        },
+        {
+          "name": "components_count",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "ScalarElementColumnDefault(0)",
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fd1b0>)",
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME",
+          "nullable": true,
+          "default": "CallableColumnDefault(<function datetime.utcnow at 0x7fad200fd2d0>)",
+          "primary_key": false
+        }
+      ]
+    }
+  },
+  "current_schema_hash": "738fa068543c0237c82ecd11030f2d1ef5b771c2f5d90f9ea688bd4c732ab63f"
+}

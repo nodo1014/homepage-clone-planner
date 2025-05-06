@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+    .code-block {
+        background-color: #f5f5f5;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        font-family: monospace;
+    }
+    
+    .endpoint {
+        border-left: 4px solid #1095c1;
+        padding-left: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .method {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 0.3rem;
+        margin-right: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .method-get {
+        background-color: #61affe;
+        color: white;
+    }
+    
+    .method-post {
+        background-color: #49cc90;
+        color: white;
+    }
+    
+    .tab-buttons {
+        margin-bottom: 1rem;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .schema-object {
+        margin-left: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<article>
+    <header>
+        <h1>AI 개발자 인터페이스</h1>
+        <p>홈페이지 클론 기획서 생성기 API를 활용하여 웹사이트 구조를 분석하고 메타데이터를 추출할 수 있습니다.</p>
+    </header>
+
+    <section>
+        <h2>개요</h2>
+        <p>
+            이 API는 외부 AI 시스템이 웹사이트를 분석하고 그 구조를 이해하는 데 도움을 줍니다.
+            URL을 제공하면 웹사이트의 구조, 디자인 요소, 콘텐츠 레이아웃을 표준화된 JSON 형식으로 반환합니다.
+        </p>
+        <p>
+            이 데이터는 AI 모델이 웹사이트의 구조를 이해하고, 클론 개발에 활용하거나, 개선점을 제안하는 데 유용합니다.
+        </p>
+    </section>
+
+    <section>
+        <h2>API 문서</h2>
+        <p>
+            아래 링크를 통해 전체 API 문서에 접근할 수 있습니다. API 문서는 모든 엔드포인트, 매개변수, 응답 형식에 대한 자세한 정보를 제공합니다.
+        </p>
+        <div class="grid">
+            <div>
+                <a href="/api/docs" class="button primary" target="_blank">HTML 형식 문서 보기</a>
+                <p>브라우저에서 HTML 형식으로 API 문서를 확인합니다.</p>
+            </div>
+            <div>
+                <a href="/api/docs/md" class="button secondary" target="_blank">마크다운 문서 다운로드</a>
+                <p>마크다운 형식의 API 문서를 다운로드합니다.</p>
+            </div>
+            <div>
+                <a href="/api/docs/regenerate" class="button outline" target="_blank">문서 다시 생성</a>
+                <p>API 문서를 최신 상태로 다시 생성합니다(개발 중에만 사용).</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>API 엔드포인트</h2>
+        
+        <div class="endpoint">
+            <h3><span class="method method-post">POST</span> /analyze</h3>
+            <p>웹사이트 URL을 입력받아 분석 작업을 시작합니다.</p>
+            
+            <h4>요청 파라미터</h4>
+            <ul>
+                <li><strong>url</strong> (필수) - 분석할 웹사이트 URL</li>
+            </ul>
+            
+            <h4>예시</h4>
+            <div x-data="{ activeTab: 'curl' }">
+                <div class="tab-buttons">
+                    <button @click="activeTab = 'curl'" :class="{ 'primary': activeTab === 'curl' }">curl</button>
+                    <button @click="activeTab = 'python'" :class="{ 'primary': activeTab === 'python' }">Python</button>
+                    <button @click="activeTab = 'js'" :class="{ 'primary': activeTab === 'js' }">JavaScript</button>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'curl' }">
+                    <pre class="code-block">curl -X POST "http://localhost:9000/analyze" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "url=https://example.com"</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'python' }">
+                    <pre class="code-block">import requests
+
+response = requests.post(
+    "http://localhost:9000/analyze",
+    data={"url": "https://example.com"}
+)
+
+# 응답에서 task_id 추출
+task_id = response.json().get("task_id")
+print(f"분석 작업 ID: {task_id}")</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'js' }">
+                    <pre class="code-block">// fetch API 사용
+const response = await fetch("http://localhost:9000/analyze", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "url=https://example.com"
+});
+
+const data = await response.json();
+const taskId = data.task_id;
+console.log(`분석 작업 ID: ${taskId}`);</pre>
+                </div>
+            </div>
+            
+            <h4>응답</h4>
+            <pre class="code-block">{
+    "task_id": "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0"
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3><span class="method method-get">GET</span> /analyze/status/{task_id}</h3>
+            <p>분석 작업의 상태를 확인합니다.</p>
+            
+            <h4>요청 파라미터</h4>
+            <ul>
+                <li><strong>task_id</strong> (경로 파라미터) - 분석 작업 ID</li>
+            </ul>
+            
+            <h4>예시</h4>
+            <div x-data="{ activeTab: 'curl' }">
+                <div class="tab-buttons">
+                    <button @click="activeTab = 'curl'" :class="{ 'primary': activeTab === 'curl' }">curl</button>
+                    <button @click="activeTab = 'python'" :class="{ 'primary': activeTab === 'python' }">Python</button>
+                    <button @click="activeTab = 'js'" :class="{ 'primary': activeTab === 'js' }">JavaScript</button>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'curl' }">
+                    <pre class="code-block">curl "http://localhost:9000/analyze/status/f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0"</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'python' }">
+                    <pre class="code-block">import requests
+
+task_id = "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0"
+response = requests.get(f"http://localhost:9000/analyze/status/{task_id}")
+status = response.json()
+print(f"작업 상태: {status['status']}, 진행률: {status['progress']}%")</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'js' }">
+                    <pre class="code-block">// fetch API 사용
+const taskId = "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0";
+const response = await fetch(`http://localhost:9000/analyze/status/${taskId}`);
+const status = await response.json();
+console.log(`작업 상태: ${status.status}, 진행률: ${status.progress}%`);</pre>
+                </div>
+            </div>
+            
+            <h4>응답</h4>
+            <pre class="code-block">{
+    "task_id": "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0",
+    "status": "running",
+    "progress": 65,
+    "message": "디자인 요소 추출 중..."
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3><span class="method method-get">GET</span> /api/structure/{task_id}</h3>
+            <p>완료된 분석 작업의 메타데이터를 가져옵니다.</p>
+            
+            <h4>요청 파라미터</h4>
+            <ul>
+                <li><strong>task_id</strong> (경로 파라미터) - 분석 작업 ID</li>
+            </ul>
+            
+            <h4>예시</h4>
+            <div x-data="{ activeTab: 'curl' }">
+                <div class="tab-buttons">
+                    <button @click="activeTab = 'curl'" :class="{ 'primary': activeTab === 'curl' }">curl</button>
+                    <button @click="activeTab = 'python'" :class="{ 'primary': activeTab === 'python' }">Python</button>
+                    <button @click="activeTab = 'js'" :class="{ 'primary': activeTab === 'js' }">JavaScript</button>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'curl' }">
+                    <pre class="code-block">curl "http://localhost:9000/api/structure/f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0"</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'python' }">
+                    <pre class="code-block">import requests
+
+task_id = "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0"
+response = requests.get(f"http://localhost:9000/api/structure/{task_id}")
+structure = response.json()
+
+# 메타데이터 접근 예시
+if structure["status"] == "success":
+    ui_structure = structure["ui_structure"]
+    design_elements = structure["design_elements"]
+    content_structure = structure["content_structure"]
+    
+    # 예: 메뉴 항목 출력
+    for item in ui_structure.get("nav", []):
+        print(f"메뉴 항목: {item.get('title')}")</pre>
+                </div>
+                
+                <div class="tab-content" :class="{ 'active': activeTab === 'js' }">
+                    <pre class="code-block">// fetch API 사용
+const taskId = "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0";
+const response = await fetch(`http://localhost:9000/api/structure/${taskId}`);
+const structure = await response.json();
+
+// 메타데이터 접근 예시
+if (structure.status === "success") {
+    const uiStructure = structure.ui_structure;
+    const designElements = structure.design_elements;
+    const contentStructure = structure.content_structure;
+    
+    // 예: 메뉴 항목 출력
+    uiStructure.nav.forEach(item => {
+        console.log(`메뉴 항목: ${item.title}`);
+    });
+}</pre>
+                </div>
+            </div>
+            
+            <h4>응답</h4>
+            <pre class="code-block">{
+    "status": "success",
+    "task_id": "f8e7d6c5-b4a3-92e1-80f7-65e4d3c2b1a0",
+    "ui_structure": {
+        "url": "https://example.com",
+        "title": "Example Website",
+        "description": "This is an example website for demonstration",
+        "keywords": ["example", "demo", "website"],
+        "nav": [
+            {
+                "title": "Home",
+                "url": "https://example.com/",
+                "has_submenu": false
+            },
+            {
+                "title": "Products",
+                "url": "https://example.com/products",
+                "has_submenu": true,
+                "children": [
+                    {
+                        "title": "Product A",
+                        "url": "https://example.com/products/a",
+                        "has_submenu": false
+                    }
+                ]
+            }
+        ],
+        "pages": [
+            {
+                "url": "https://example.com/",
+                "title": "Example Home",
+                "purpose": "홈페이지"
+            }
+        ]
+    },
+    "design_elements": {
+        "colors": [
+            {"hex": "#1a73e8", "name": "Blue", "type": "primary"},
+            {"hex": "#ffffff", "name": "White", "type": "background"}
+        ],
+        "layout_type": "responsive",
+        "style_patterns": ["반응형 디자인", "히어로 섹션 포함"]
+    },
+    "content_structure": {
+        "header": {
+            "has_logo": true,
+            "has_nav": true
+        },
+        "main": {
+            "sections": ["hero", "features", "testimonials"]
+        }
+    }
+}</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3><span class="method method-get">GET</span> /api/schema</h3>
+            <p>API의 스키마 정보를 가져옵니다.</p>
+            
+            <h4>예시</h4>
+            <pre class="code-block">curl "http://localhost:9000/api/schema"</pre>
+        </div>
+    </section>
+
+    <section>
+        <h2>메타데이터 구조</h2>
+        
+        <h3>UI 구조 (ui_structure)</h3>
+        <ul>
+            <li><strong>url</strong>: 분석된 웹사이트 URL</li>
+            <li><strong>title</strong>: 웹사이트 제목</li>
+            <li><strong>description</strong>: 웹사이트 설명</li>
+            <li><strong>keywords</strong>: 메타 키워드 목록</li>
+            <li>
+                <strong>nav</strong>: 메뉴 구조 목록
+                <ul class="schema-object">
+                    <li><strong>title</strong>: 메뉴 항목 제목</li>
+                    <li><strong>url</strong>: 메뉴 항목 URL</li>
+                    <li><strong>has_submenu</strong>: 하위 메뉴 존재 여부</li>
+                    <li><strong>children</strong>: 하위 메뉴 항목 목록 (재귀적)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>pages</strong>: 페이지 목록
+                <ul class="schema-object">
+                    <li><strong>url</strong>: 페이지 URL</li>
+                    <li><strong>title</strong>: 페이지 제목</li>
+                    <li><strong>purpose</strong>: 페이지 목적 (추론)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>components</strong>: UI 컴포넌트 목록
+                <ul class="schema-object">
+                    <li><strong>type</strong>: 컴포넌트 유형</li>
+                    <li><strong>count</strong>: 컴포넌트 개수</li>
+                </ul>
+            </li>
+            <li><strong>layout</strong>: 레이아웃 정보</li>
+        </ul>
+        
+        <h3>디자인 요소 (design_elements)</h3>
+        <ul>
+            <li>
+                <strong>colors</strong>: 색상 팔레트
+                <ul class="schema-object">
+                    <li><strong>hex</strong>: 16진수 색상 코드</li>
+                    <li><strong>name</strong>: 색상 이름</li>
+                    <li><strong>type</strong>: 색상 유형 (primary, background 등)</li>
+                </ul>
+            </li>
+            <li><strong>layout_type</strong>: 레이아웃 유형 (responsive, fixed 등)</li>
+            <li><strong>style_patterns</strong>: 스타일 패턴 목록</li>
+        </ul>
+        
+        <h3>콘텐츠 구조 (content_structure)</h3>
+        <ul>
+            <li>
+                <strong>header</strong>: 헤더 섹션 정보
+                <ul class="schema-object">
+                    <li><strong>has_logo</strong>: 로고 존재 여부</li>
+                    <li><strong>has_nav</strong>: 내비게이션 존재 여부</li>
+                </ul>
+            </li>
+            <li>
+                <strong>main</strong>: 메인 콘텐츠 정보
+                <ul class="schema-object">
+                    <li><strong>sections</strong>: 섹션 목록</li>
+                </ul>
+            </li>
+            <li>
+                <strong>footer</strong>: 푸터 섹션 정보
+                <ul class="schema-object">
+                    <li><strong>has_links</strong>: 링크 존재 여부</li>
+                    <li><strong>has_social</strong>: 소셜 링크 존재 여부</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>전체 분석 흐름</h2>
+        <ol>
+            <li><strong>웹사이트 URL 제출</strong>: <code>/analyze</code> 엔드포인트로 URL 전송</li>
+            <li><strong>작업 상태 확인</strong>: <code>/analyze/status/{task_id}</code> 엔드포인트로 작업 상태 확인</li>
+            <li><strong>완료 대기</strong>: 작업이 완료될 때까지 주기적으로 상태 확인</li>
+            <li><strong>메타데이터 요청</strong>: <code>/api/structure/{task_id}</code> 엔드포인트로 완료된 분석 결과 요청</li>
+            <li><strong>AI 처리</strong>: 반환된 메타데이터를 AI 모델에 전달하여 추가 분석 또는 클론 기획서 생성</li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>완전한 예제: 웹사이트 분석 및 메타데이터 추출</h2>
+        <h3>Python 예제</h3>
+        <pre class="code-block">import requests
+import time
+
+# 1. 웹사이트 URL 제출
+url = "https://example.com"
+response = requests.post(
+    "http://localhost:9000/analyze",
+    data={"url": url}
+)
+task_id = response.json().get("task_id")
+print(f"분석 작업 시작: {task_id}")
+
+# 2. 작업 상태 주기적 확인
+status = "pending"
+while status not in ["completed", "error"]:
+    time.sleep(2)  # 2초마다 확인
+    response = requests.get(f"http://localhost:9000/analyze/status/{task_id}")
+    status_data = response.json()
+    status = status_data.get("status")
+    progress = status_data.get("progress", 0)
+    message = status_data.get("message", "")
+    print(f"상태: {status}, 진행률: {progress}%, 메시지: {message}")
+
+# 3. 오류 확인
+if status == "error":
+    print(f"오류 발생: {message}")
+    exit(1)
+
+# 4. 메타데이터 요청
+print("\n분석 완료! 메타데이터 가져오는 중...")
+response = requests.get(f"http://localhost:9000/api/structure/{task_id}")
+structure = response.json()
+
+if structure["status"] == "success":
+    # 5. 데이터 처리
+    ui_structure = structure["ui_structure"]
+    design_elements = structure["design_elements"]
+    
+    # 예: 제목과 메뉴 항목 출력
+    print(f"\n웹사이트: {ui_structure.get('title')}")
+    print(f"설명: {ui_structure.get('description')}")
+    
+    print("\n메뉴 구조:")
+    for item in ui_structure.get("nav", []):
+        print(f"- {item.get('title')} ({item.get('url')})")
+        for child in item.get("children", []):
+            print(f"  - {child.get('title')} ({child.get('url')})")
+    
+    print("\n디자인 스타일:")
+    for pattern in design_elements.get("style_patterns", []):
+        print(f"- {pattern}")
+    
+    print("\n색상 팔레트:")
+    for color in design_elements.get("colors", []):
+        print(f"- {color.get('name')}: {color.get('hex')} ({color.get('type')})")
+else:
+    print(f"메타데이터 가져오기 실패: {structure.get('message')}")</pre>
+    </section>
+
+    <section>
+        <h2>AI 개발자를 위한 팁</h2>
+        <ol>
+            <li>API 호출에서 오류 처리를 항상 구현하세요.</li>
+            <li>작업이 완료될 때까지 상태 확인 간격을 적절히 조정하세요 (지수 백오프 방식 권장).</li>
+            <li>분석은 몇 초에서 1분 이상 소요될 수 있으므로 적절한 타임아웃 설정이 필요합니다.</li>
+            <li>복잡한 웹사이트나 비표준 구조를 가진 사이트는 분석 정확도가 낮을 수 있습니다.</li>
+            <li>메타데이터를 백엔드에 저장하여 향후 활용할 수 있도록 하세요.</li>
+        </ol>
+    </section>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Alpine.js는 이미 base.html에 로드되어 있습니다.
+    // 탭 기능은 Alpine.js의 x-data, x-bind 등을 사용합니다.
+</script>
+{% endblock %} 

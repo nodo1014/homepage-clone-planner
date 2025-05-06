@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈페이지 클론 기획서 생성기 - 분석 결과</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo h1 {
+            color: #3949AB;
+            margin: 0;
+            font-size: 24px;
+        }
+        .logo span {
+            color: #666;
+            font-size: 14px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #444;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3949AB;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .button:hover {
+            background-color: #303F9F;
+        }
+        .button.secondary {
+            background-color: #78909C;
+        }
+        .button.secondary:hover {
+            background-color: #607D8B;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3949AB;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .file-list {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .file-list ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .file-list li {
+            margin-bottom: 5px;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            th, td {
+                padding: 8px;
+            }
+            .button {
+                display: block;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>홈페이지 클론 기획서 생성기</h1>
+            <span>웹사이트 분석 및 기획서 생성 서비스</span>
+        </div>
+        
+        <h1>분석 결과가 준비되었습니다</h1>
+        
+        <p>안녕하세요,</p>
+        <p>요청하신 웹사이트에 대한 분석이 완료되었습니다. 아래에서 분석 결과 요약을 확인하실 수 있습니다.</p>
+        
+        <table>
+            <tr>
+                <th>웹사이트</th>
+                <td>{{website_name}}</td>
+            </tr>
+            <tr>
+                <th>URL</th>
+                <td><a href="{{website_url}}" style="color: #3949AB; text-decoration: none;">{{website_url}}</a></td>
+            </tr>
+            <tr>
+                <th>설명</th>
+                <td>{{description}}</td>
+            </tr>
+        </table>
+        
+        <div class="summary">
+            <h2>분석 요약</h2>
+            <p>이 웹사이트는 {{description}}</p>
+            <p>주요 구성 요소와 기능이 식별되었으며, 첨부된 파일에서 자세한 내용을 확인하실 수 있습니다.</p>
+        </div>
+        
+        <div class="file-list">
+            <h3>첨부 파일</h3>
+            <p>다음 파일이 이메일에 첨부되어 있습니다:</p>
+            <ul>
+                <li>기획서 (MD 형식)</li>
+                <li>디자인 분석 (JSON 형식)</li>
+                <li>종합 보고서 (PDF 형식)</li>
+                <li>모든 결과물 (ZIP 형식)</li>
+            </ul>
+        </div>
+        
+        <p>
+            <a href="{{website_url}}" class="button">웹사이트 방문</a>
+            <a href="https://example.com/results/{{result_id}}" class="button secondary">상세 결과 보기</a>
+        </p>
+        
+        <p>추가 정보나 질문이 있으시면 언제든지 문의해 주세요.</p>
+        
+        <p>감사합니다.</p>
+        
+        <div class="footer">
+            <p>© 2025 홈페이지 클론 기획서 생성기. All rights reserved.</p>
+            <p>이 이메일은 자동으로 생성되었습니다. 회신하지 마세요.</p>
+        </div>
+    </div>
+</body>
+</html> 

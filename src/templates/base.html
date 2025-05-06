@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title | default("홈페이지 클론 기획서 생성기") }}</title>
+    
+    <!-- PicoCSS - 최소한의 CSS 프레임워크 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    
+    <!-- HTMX - 자바스크립트 없이 동적 인터랙션 처리 -->
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    
+    <!-- Alpine.js - 최소한의 JS 인터랙션 (토글/모달용) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- 커스텀 스타일 -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><strong><a href="/">홈페이지 클론 기획서 생성기</a></strong></li>
+            </ul>
+            <ul>
+                <li><a href="/settings">API 설정</a></li>
+                <li><a href="/ai-interface">AI 인터페이스</a></li>
+                <li><a href="#" role="button" class="secondary outline" onclick="window.history.back()">뒤로</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <article class="message {{ message.type }}">
+                    {{ message.text }}
+                </article>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container">
+        <small>
+            &copy; 2025 홈페이지 클론 기획서 생성기 | 
+            <a href="https://github.com/yourusername/cloner" target="_blank">GitHub</a>
+        </small>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

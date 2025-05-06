@@ -1,0 +1,114 @@
+<!-- 분석 상태 업데이트 컴포넌트 -->
+<div class="status-container" 
+     hx-get="/analyze/status/{{ task_id }}" 
+     hx-trigger="load, every 2s" 
+     hx-swap="outerHTML">
+
+    <p class="current-action">{{ message }}</p>
+    <div class="progress-container">
+        <div class="progress-bar" style="width: {{ progress }}%;"></div>
+    </div>
+
+    <h4>세부 진행 상태:</h4>
+    <ul class="steps-list" style="list-style-type: none; padding-left: 0;">
+        {% for step in steps %}
+        <li class="step-item status-{{ step.status }}" style="text-align: left; margin-bottom: 0.5em;">
+            <span class="step-icon">
+                {% if step.status == 'pending' %}⏳
+                {% elif step.status == 'running' %}⚙️
+                {% elif step.status == 'completed' %}✅
+                {% elif step.status == 'error' %}❌
+                {% endif %}
+            </span>
+            <span class="step-name">{{ step.name }}</span>
+            {% if step.message %}
+            <small class="step-message">- {{ step.message }}</small>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    
+    {% if status == "completed" and result_id %}
+    <div class="message success" style="margin-top: 1rem;">
+        <p><strong>분석 완료!</strong></p>
+        <a href="/results/{{ result_id }}" role="button" class="primary" id="view-results-btn">결과 보기</a>
+    </div>
+    <script>
+        // 동일한 결과 페이지로 중복 리다이렉트 방지
+        (function() {
+            // 이미 리다이렉트된 경우 처리 방지
+            if (window._redirectInProgress) {
+                return;
+            }
+            
+            // 현재 페이지가 결과 페이지인지 확인
+            if (window.location.pathname.includes('/results/')) {
+                console.log('이미 결과 페이지에 있습니다.');
+                return;
+            }
+            
+            const resultId = '{{ result_id }}';
+            const lastRedirectedResultId = localStorage.getItem('lastRedirectedResultId');
+            
+            // 이미 동일한 결과 ID로 리다이렉트한 경우 리다이렉트 방지
+            if (lastRedirectedResultId === resultId) {
+                console.log('이미 동일한 결과로 리다이렉트되었습니다:', resultId);
+                return;
+            }
+            
+            // 결과 ID가 있고 상태가 completed일 때만 리다이렉션 처리
+            if (resultId) {
+                // 로컬 스토리지에 완료된 결과 ID 저장
+                localStorage.setItem('lastCompletedResultId', resultId);
+                
+                // 리다이렉트 진행 플래그 설정
+                window._redirectInProgress = true;
+                
+                // 결과 페이지로 이동
+                console.log('분석 완료, 결과 페이지로 이동:', resultId);
+                localStorage.setItem('lastRedirectedResultId', resultId);
+                
+                // 딜레이를 주어 스왑이 완료된 후 리다이렉트 실행
+                setTimeout(function() {
+                    window.location.href = '/results/' + resultId;
+                }, 1000);
+            }
+        })();
+    </script>
+    {% elif status == "error" %}
+    <div class="message error" style="margin-top: 1rem;">
+        <p><strong>오류 발생:</strong> {{ message }}</p>
+        {% if error %}
+        <div class="error-details" style="background: #f8f8f8; border-left: 3px solid #d9534f; padding: 0.5rem 1rem; margin: 0.5rem 0; font-size: 0.9rem;">
+            <p><strong>상세 오류:</strong> {{ error }}</p>
+            
+            {% if 'timeout' in error|lower %}
+            <p><strong>가능한 원인:</strong> 요청 시간이 초과되었습니다. 웹사이트가 응답하는 데 시간이 너무 오래 걸리고 있습니다.</p>
+            <p><strong>해결 방법:</strong> 다른 웹사이트를 시도하거나, 나중에 다시 시도해보세요.</p>
+            
+            {% elif 'forbidden' in error|lower or '403' in error %}
+            <p><strong>가능한 원인:</strong> 웹사이트에서 접근을 차단했습니다. 이 웹사이트는 봇이나 자동화된 도구의 접근을 방지하고 있습니다.</p>
+            <p><strong>해결 방법:</strong> 다른 웹사이트를 분석해보세요. 공개적으로 접근 가능한 사이트가 좋습니다.</p>
+            
+            {% elif 'not found' in error|lower or '404' in error %}
+            <p><strong>가능한 원인:</strong> 웹사이트 페이지를 찾을 수 없습니다. URL이 올바르지 않거나 페이지가 더 이상 존재하지 않습니다.</p>
+            <p><strong>해결 방법:</strong> URL이 올바른지 확인하고 다시 시도하세요.</p>
+            
+            {% elif 'dns' in error|lower %}
+            <p><strong>가능한 원인:</strong> 도메인을 찾을 수 없습니다. 입력한 URL의 도메인이 존재하지 않거나 DNS 문제가 있을 수 있습니다.</p>
+            <p><strong>해결 방법:</strong> URL을 확인하고 올바른 도메인을 입력했는지 확인하세요.</p>
+            
+            {% elif 'connection' in error|lower %}
+            <p><strong>가능한 원인:</strong> 서버에 연결할 수 없습니다. 서버가 응답하지 않거나 네트워크 문제가 있을 수 있습니다.</p>
+            <p><strong>해결 방법:</strong> 잠시 후 다시 시도하거나 다른 웹사이트를 분석해보세요.</p>
+            
+            {% else %}
+            <p><strong>가능한 원인:</strong> 웹사이트 분석 중 예상치 못한 문제가 발생했습니다.</p>
+            <p><strong>해결 방법:</strong> 다른 웹사이트로 시도하거나, 개발자에게 오류 내용을 보고해주세요.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        <a href="/" role="button" class="outline">메인 화면으로 돌아가기</a>
+    </div>
+    {% endif %}
+</div> 

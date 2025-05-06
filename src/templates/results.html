@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- 디버깅 정보 (개발 중에만 표시) -->
+    {% if True %}
+    <div class="debug-info" style="background: #f8f9fa; border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; font-family: monospace; font-size: 12px;">
+        <h4>디버깅 정보 (개발용)</h4>
+        <ul>
+            <li>URL: {{ results.url }}</li>
+            <li>제목: {{ results.title }}</li>
+            <li>설명: {{ results.description }}</li>
+            <li>내비게이션 항목: {{ results.nav_items|length }}</li>
+            <li>컴포넌트: {{ results.components|length }}</li>
+            <li>컬러: {{ results.colors|length }}</li>
+            <li>레이아웃: {{ results.layout_type }}</li>
+            <li>목업 이미지: {{ results.mockups|length }}</li>
+        </ul>
+    </div>
+    {% endif %}
+    
+    <div class="results-header">
+        <h1>{{ results.title }}</h1>
+        <p class="url"><a href="{{ results.url }}" target="_blank">{{ results.url }}</a></p>
+        <p class="description">{{ results.description }}</p>
+        <p class="created-at">분석 일시: {{ results.created_at }}</p>
+    </div>
+    
+    <section class="container">
+        <div class="card">
+            <h1>분석 결과: {{ results.title }}</h1>
+            <p>{{ results.url }} 웹사이트 분석 결과입니다.</p>
+            <p><small>분석 완료: {{ results.created_at }}</small></p>
+            
+            <!-- 탭 선택 메뉴 -->
+            <div class="tabs" x-data="{ activeTab: 'tab-1' }">
+                <div class="tab" 
+                     :class="{ 'active': activeTab === 'tab-1' }" 
+                     @click="activeTab = 'tab-1'">
+                    🗒️ 기획서
+                </div>
+                <div class="tab" 
+                     :class="{ 'active': activeTab === 'tab-2' }" 
+                     @click="activeTab = 'tab-2'">
+                    🎨 디자인
+                </div>
+                <div class="tab" 
+                     :class="{ 'active': activeTab === 'tab-3' }" 
+                     @click="activeTab = 'tab-3'">
+                    💡 아이디어
+                </div>
+            </div>
+            
+            <!-- 노션 내보내기 결과 메시지 표시 영역 -->
+            <div id="notion-export-result" style="margin: 1rem 0; display: none;"></div>
+            
+            <!-- 구글 드라이브 내보내기 결과 메시지 표시 영역 -->
+            <div id="gdrive-export-result" style="margin: 1rem 0; display: none;"></div>
+            
+            <!-- 탭 내용 -->
+            <div class="tab-content" x-show="activeTab === 'tab-1'">
+                <article>
+                    <h2>🗒️ 기획서</h2>
+                    <h3>사이트 분석</h3>
+                    <p><strong>목적:</strong> {{ results.description }}</p>
+                    <p><strong>개요:</strong> {{ results.overview }}</p>
+                    
+                    <h3>페이지 구조</h3>
+                    <h4>메뉴 체계</h4>
+                    <ul>
+                        {% if results.nav_items %}
+                            {% for item in results.nav_items %}
+                            <li>{{ item.title }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Home</li>
+                            <li>About</li>
+                            <li>Services</li>
+                            <li>Contact</li>
+                        {% endif %}
+                    </ul>
+                    
+                    <h4>핵심 페이지</h4>
+                    {% if results.page_structure %}
+                        <ol>
+                            {% for page in results.page_structure %}
+                            <li>
+                                <strong>{{ page.name }}:</strong> {{ page.description }}
+                                {% if page.components %}
+                                <ul>
+                                    {% for component in page.components %}
+                                    <li>{{ component }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <ol>
+                            <li><strong>홈페이지:</strong> 주요 서비스 및 가치 제안 소개</li>
+                            <li><strong>서비스 페이지:</strong> 상세 서비스 정보 제공</li>
+                            <li><strong>연락처 페이지:</strong> 문의 양식 및 연락처 정보</li>
+                        </ol>
+                    {% endif %}
+                    
+                    <h3>개발 가이드</h3>
+                    <h4>기술 스택</h4>
+                    {% if results.tech_stack %}
+                        <ul>
+                            {% for tech in results.tech_stack %}
+                            <li>{{ tech }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <ul>
+                            <li>프론트엔드: HTML, CSS, JavaScript</li>
+                            <li>백엔드: 필요에 따라 API 서버 구현</li>
+                            <li>라이브러리: 반응형 디자인을 위한 프레임워크</li>
+                        </ul>
+                    {% endif %}
+                    
+                    <h4>개발 단계</h4>
+                    <ol>
+                        <li>기본 구조 및 레이아웃 구현</li>
+                        <li>핵심 기능 구현</li>
+                        <li>디자인 및 UI 완성</li>
+                        <li>테스트 및 최적화</li>
+                    </ol>
+                    
+                    <h4>AI 분석 기반 제안</h4>
+                    <div class="ai-insights">
+                        {{ results.recommendations|safe }}
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <a href="/download/{{ result_id }}/plan" role="button" class="outline">기획서 다운로드 (MD)</a>
+                        </div>
+                        <div>
+                            <a href="/export/{{ result_id }}/markdown" role="button" class="secondary outline">내보내기</a>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/notion"
+                                hx-target="#notion-export-result"
+                                hx-indicator="#notion-loading"
+                                class="secondary outline">노션으로 내보내기</button>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/gdrive"
+                                hx-target="#gdrive-export-result"
+                                hx-indicator="#gdrive-loading"
+                                class="secondary outline">구글 드라이브로 내보내기</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="tab-content" x-show="activeTab === 'tab-2'">
+                <article>
+                    <h2>🎨 디자인</h2>
+                    
+                    <h3>색상 팔레트</h3>
+                    <div class="color-palette">
+                        {% if results.colors %}
+                            {% for color in results.colors %}
+                                {% if color.hex %}
+                                <div class="color-box" style="background-color: {{ color.hex }}">
+                                    <span>{{ color.hex }}</span>
+                                </div>
+                                {% elif color.color %}
+                                <div class="color-box" style="background-color: {{ color.color }}">
+                                    <span>{{ color.color }}</span>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="color-box" style="background-color: #3949AB;">
+                                <span>#3949AB</span>
+                            </div>
+                            <div class="color-box" style="background-color: #5C6BC0;">
+                                <span>#5C6BC0</span>
+                            </div>
+                            <div class="color-box" style="background-color: #7986CB;">
+                                <span>#7986CB</span>
+                            </div>
+                            <div class="color-box" style="background-color: #C5CAE9;">
+                                <span>#C5CAE9</span>
+                            </div>
+                            <div class="color-box" style="background-color: #FFFFFF; color: #212121; text-shadow: none;">
+                                <span>#FFFFFF</span>
+                            </div>
+                            <div class="color-box" style="background-color: #212121;">
+                                <span>#212121</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h3>UI 컴포넌트 분석</h3>
+                    <ul>
+                        {% if results.components %}
+                            {% for component in results.components %}
+                            <li><strong>{{ component.type }}:</strong> {{ component.description }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li><strong>내비게이션:</strong> 상단 고정 메뉴바, 모바일 햄버거 메뉴</li>
+                            <li><strong>버튼:</strong> 기본, 강조, 아웃라인 스타일</li>
+                            <li><strong>카드:</strong> 그림자 효과가 있는 컨텐츠 카드</li>
+                            <li><strong>폼:</strong> 라벨 상단 배치, 실시간 유효성 검사</li>
+                        {% endif %}
+                    </ul>
+                    
+                    <h3>레이아웃 유형</h3>
+                    <p><strong>{{ results.layout_type|default("반응형 그리드 레이아웃") }}</strong></p>
+                    
+                    <h3>AI 디자인 인사이트</h3>
+                    <div class="ai-insights">
+                        {{ results.design_insights|safe }}
+                    </div>
+                    
+                    <h3>접근성 점검 및 개선 제안</h3>
+                    <div class="accessibility-analysis">
+                        {% if results.accessibility_analysis %}
+                        <div class="grid">
+                            <div>
+                                <h4>WCAG 접근성 준수 수준</h4>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ results.accessibility_analysis.score }}%"></div>
+                                </div>
+                                <p>{{ results.accessibility_analysis.score }}% - {{ results.accessibility_analysis.level }}</p>
+                            </div>
+                            <div>
+                                <h4>주요 접근성 이슈</h4>
+                                <ul>
+                                    {% for issue in results.accessibility_analysis.issues %}
+                                    <li>{{ issue }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <h4>개선 제안</h4>
+                        <ul>
+                            {% for suggestion in results.accessibility_analysis.suggestions %}
+                            <li>{{ suggestion }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <div class="ai-insights">
+                            <p><strong>색상 대비:</strong> 색상 간 충분한 대비를 확보하여 시각 장애가 있는 사용자도 콘텐츠를 인식할 수 있도록 해야 합니다. 특히 배경색과 텍스트 색상의 대비가 WCAG 기준을 충족하는지 확인하세요.</p>
+                            <p><strong>키보드 접근성:</strong> 모든 기능이 키보드만으로 사용 가능해야 합니다. 키보드 초점 표시를 명확히 하고, 탭 순서가 논리적인지 확인하세요.</p>
+                            <p><strong>대체 텍스트:</strong> 모든 이미지에 적절한 대체 텍스트를 제공하여 스크린 리더 사용자가 내용을 이해할 수 있도록 해야 합니다.</p>
+                            <p><strong>문서 구조:</strong> 시맨틱 HTML 요소를 사용하고 올바른 헤딩 구조를 유지하여 스크린 리더가 문서를 올바르게 해석할 수 있도록 하세요.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h3>목업 이미지</h3>
+                    <div class="mockup-container">
+                        {% if results.mockups.homepage %}
+                        <h4>홈페이지 목업</h4>
+                        <img src="{{ results.mockups.homepage }}" alt="홈페이지 목업" class="mockup-image">
+                        {% endif %}
+                        
+                        {% if results.mockups.services %}
+                        <h4>서비스 페이지 목업</h4>
+                        <img src="{{ results.mockups.services }}" alt="서비스 페이지 목업" class="mockup-image">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <a href="/download/{{ result_id }}/design" role="button" class="outline">디자인 요소 다운로드</a>
+                        </div>
+                        <div>
+                            <a href="/export/{{ result_id }}/images" role="button" class="secondary outline">이미지 내보내기</a>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/notion"
+                                hx-target="#notion-export-result"
+                                hx-indicator="#notion-loading"
+                                class="secondary outline">노션으로 내보내기</button>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/gdrive"
+                                hx-target="#gdrive-export-result"
+                                hx-indicator="#gdrive-loading"
+                                class="secondary outline">구글 드라이브로 내보내기</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="tab-content" x-show="activeTab === 'tab-3'">
+                <article>
+                    <h2>💡 아이디어</h2>
+                    
+                    <h3>AI 기능 개선 인사이트</h3>
+                    <div class="ai-insights">
+                        {{ results.functional_insights|safe }}
+                    </div>
+                    
+                    <h3>비즈니스 모델 확장 방안</h3>
+                    <ol>
+                        {% if results.business_ideas %}
+                            {% for idea in results.business_ideas %}
+                            <li>
+                                <h4>{{ idea.title }}</h4>
+                                <p>{{ idea.description }}</p>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>
+                                <h4>서비스 업그레이드 전략</h4>
+                                <p>기존 서비스를 확장하여 프리미엄 티어를 제공합니다. 고급 분석 도구, 우선 지원, 추가 기능 등을 포함할 수 있습니다.</p>
+                            </li>
+                            <li>
+                                <h4>Freemium 모델 도입</h4>
+                                <p>기본 서비스는 무료로 제공하고, 고급 기능은 구독 모델로 전환합니다. 이를 통해 사용자 기반을 확대하고 수익을 창출할 수 있습니다.</p>
+                            </li>
+                        {% endif %}
+                    </ol>
+                    
+                    <h3>응용 서비스 아이디어</h3>
+                    <ul>
+                        {% if results.extension_services %}
+                            {% for service in results.extension_services %}
+                            <li>
+                                <h4>{{ service.title }}</h4>
+                                <p>{{ service.description }}</p>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>
+                                <h4>모바일 앱 개발</h4>
+                                <p>현재 웹 서비스를 모바일 앱으로 확장하여 사용자 접근성을 향상시킵니다.</p>
+                            </li>
+                            <li>
+                                <h4>API 서비스 제공</h4>
+                                <p>데이터와 기능을 API 형태로 제공하여 개발자 생태계를 구축합니다.</p>
+                            </li>
+                            <li>
+                                <h4>AI 기반 추천 시스템</h4>
+                                <p>사용자 데이터를 분석하여 맞춤형 콘텐츠와 서비스를 추천합니다.</p>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    
+                    <h3>확장 목업 아이디어</h3>
+                    <div class="mockup-container">
+                        <h4>모바일 앱 목업</h4>
+                        <img src="https://placehold.co/400x800" alt="모바일 앱 목업" class="mockup-image">
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <a href="/download/{{ result_id }}/ideas" role="button" class="outline">아이디어 다운로드</a>
+                        </div>
+                        <div>
+                            <a href="/export/{{ result_id }}/pdf" role="button" class="secondary outline">PDF로 내보내기</a>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/notion"
+                                hx-target="#notion-export-result"
+                                hx-indicator="#notion-loading"
+                                class="secondary outline">노션으로 내보내기</button>
+                        </div>
+                        <div>
+                            <button 
+                                hx-get="/export/{{ result_id }}/gdrive"
+                                hx-target="#gdrive-export-result"
+                                hx-indicator="#gdrive-loading"
+                                class="secondary outline">구글 드라이브로 내보내기</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <!-- 노션 내보내기 로딩 표시 -->
+            <div id="notion-loading" class="htmx-indicator" style="display:none; text-align:center; margin: 1rem 0;">
+                <div class="spinner" aria-label="노션으로 내보내기 중..."></div>
+                <p>노션으로 내보내기 중...</p>
+            </div>
+            
+            <!-- 구글 드라이브 내보내기 로딩 표시 -->
+            <div id="gdrive-loading" class="htmx-indicator" style="display:none; text-align:center; margin: 1rem 0;">
+                <div class="spinner" aria-label="구글 드라이브로 내보내기 중..."></div>
+                <p>구글 드라이브로 내보내기 중...</p>
+            </div>
+            
+            <!-- 이메일 전송 폼 -->
+            <div class="email-form-container" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                <h3>결과 이메일로 받기</h3>
+                
+                <form hx-post="/send-email/{{ result_id }}" 
+                      hx-target="#email-result" 
+                      hx-swap="innerHTML"
+                      hx-indicator="#email-loading">
+                    <div class="grid">
+                        <div>
+                            <input type="email" name="email" placeholder="이메일 주소" required>
+                        </div>
+                        <div>
+                            <button type="submit">이메일로 받기</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 이메일 전송 상태 및 결과 메시지 -->
+                    <div id="email-loading" class="htmx-indicator" style="display:none; text-align:center; margin-top:1rem;">
+                        <div class="spinner" aria-label="이메일 전송 중..."></div>
+                        <p>이메일 전송 중...</p>
+                    </div>
+                    <div id="email-result" style="margin-top:1rem;"></div>
+                </form>
+                
+                <p><small>입력한 이메일로 분석 결과가 첨부된 메일이 발송됩니다. 
+                    첨부 파일에는 기획서(MD), 디자인 분석(JSON), 종합 보고서(PDF) 등이 포함됩니다.</small></p>
+            </div>
+        </div>
+        
+        <div class="grid" style="margin-top: 2rem;">
+            <div>
+                <a href="/download/{{ result_id }}/zip" role="button" class="primary">전체 결과 다운로드 (ZIP)</a>
+            </div>
+            <div>
+                <a href="/" role="button" class="secondary outline">홈으로</a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Alpine.js가 이미 탭 관리를 처리하므로 추가 스크립트 불필요
+    
+    // 이메일 전송 응답 처리
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'email-result') {
+            const result = event.detail.target;
+            const response = JSON.parse(event.detail.xhr.responseText);
+            
+            if (response.status === 'success') {
+                result.innerHTML = '<div class="alert alert-success">' + response.message + '</div>';
+                // 성공 시 폼 초기화
+                const form = result.closest('form');
+                if (form) form.reset();
+            } else {
+                result.innerHTML = '<div class="alert alert-error">' + response.message + '</div>';
+            }
+        }
+        
+        // 노션 내보내기 응답 처리
+        if (event.detail.target.id === 'notion-export-result') {
+            const result = event.detail.target;
+            const response = JSON.parse(event.detail.xhr.responseText);
+            
+            result.style.display = 'block';
+            
+            if (response.status === 'success') {
+                result.innerHTML = '<div class="alert alert-success">' + 
+                    response.message + ' <a href="' + response.url + '" target="_blank">노션 페이지 열기</a></div>';
+            } else {
+                result.innerHTML = '<div class="alert alert-error">' + response.message + '</div>';
+            }
+            
+            // 5초 후 알림 숨기기
+            setTimeout(function() {
+                result.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 구글 드라이브 내보내기 응답 처리
+        if (event.detail.target.id === 'gdrive-export-result') {
+            const result = event.detail.target;
+            const response = JSON.parse(event.detail.xhr.responseText);
+            
+            result.style.display = 'block';
+            
+            if (response.status === 'success') {
+                result.innerHTML = '<div class="alert alert-success">' + 
+                    response.message + ' <a href="' + response.url + '" target="_blank">구글 드라이브 파일 열기</a></div>';
+            } else {
+                result.innerHTML = '<div class="alert alert-error">' + response.message + '</div>';
+            }
+            
+            // 5초 후 알림 숨기기
+            setTimeout(function() {
+                result.style.display = 'none';
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %} 

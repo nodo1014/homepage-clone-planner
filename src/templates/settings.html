@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container">
+    <div class="card">
+        <h1>API 설정</h1>
+        <p>홈페이지 클론 기획서 생성기는 유료 또는 무료 API를 선택하여 사용할 수 있습니다.</p>
+        
+        {% if message == 'success' %}
+        <div class="message success">
+            <p><strong>성공:</strong> 설정이 성공적으로 저장되었습니다.</p>
+        </div>
+        {% elif message == 'error' %}
+        <div class="message error">
+            <p><strong>오류:</strong> 설정 저장 중 오류가 발생했습니다.</p>
+            {% if detail %}
+            <p><small>상세 정보: {{ detail }}</small></p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form action="/settings/save" method="post" class="api-settings-form">
+            <!-- 이미지 생성 API 설정 -->
+            <div class="api-setting" x-data="{ mode: '{{ settings.image_gen_mode }}' }">
+                <h3>🖼️ 이미지 생성 API</h3>
+                
+                <div class="form-group">
+                    <label>API 모드</label>
+                    <div class="grid">
+                        <label>
+                            <input type="radio" name="image_gen_mode" value="paid" x-model="mode">
+                            유료 (DALL-E 3)
+                        </label>
+                        <label>
+                            <input type="radio" name="image_gen_mode" value="free" x-model="mode">
+                            무료 (Stable Diffusion)
+                        </label>
+                    </div>
+                </div>
+                
+                <div x-show="mode === 'paid'">
+                    <label for="openai_api_key">
+                        OpenAI API Key
+                        <input type="password" id="openai_api_key" name="openai_api_key" placeholder="sk-...">
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/openai"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        API 키 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+                
+                <div x-show="mode === 'free'">
+                    <label for="local_sd_url">
+                        Stable Diffusion 로컬 URL
+                        <input type="text" id="local_sd_url" name="local_sd_url" value="{{ settings.local_sd_url }}">
+                        <small>Stable Diffusion WebUI API 주소 (기본값: http://localhost:7860/sdapi/v1)</small>
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/sd"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        연결 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+            </div>
+            
+            <!-- 아이디어 생성 API 설정 -->
+            <div class="api-setting" x-data="{ mode: '{{ settings.idea_gen_mode }}' }">
+                <h3>💡 아이디어 생성 API</h3>
+                
+                <div class="form-group">
+                    <label>API 모드</label>
+                    <div class="grid">
+                        <label>
+                            <input type="radio" name="idea_gen_mode" value="paid" x-model="mode">
+                            유료 (DeepSeek)
+                        </label>
+                        <label>
+                            <input type="radio" name="idea_gen_mode" value="free" x-model="mode">
+                            무료 (Ollama)
+                        </label>
+                    </div>
+                </div>
+                
+                <div x-show="mode === 'paid'">
+                    <label for="deepseek_api_key">
+                        DeepSeek API Key
+                        <input type="password" id="deepseek_api_key" name="deepseek_api_key" placeholder="dsk-...">
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/deepseek"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        API 키 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+                
+                <div x-show="mode === 'free'">
+                    <label for="local_ollama_url">
+                        Ollama 로컬 URL
+                        <input type="text" id="local_ollama_url" name="local_ollama_url" value="{{ settings.local_ollama_url }}">
+                        <small>Ollama API 주소 (기본값: http://localhost:11434/api)</small>
+                    </label>
+                    <label for="ollama_model">
+                        Ollama 모델
+                        <select id="ollama_model" name="ollama_model">
+                            <option value="mistral">Mistral</option>
+                            <option value="llama2">Llama 2</option>
+                            <option value="llama3">Llama 3</option>
+                            <option value="gemma">Gemma</option>
+                        </select>
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/ollama"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        연결 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+            </div>
+            
+            <!-- 코드 생성 API 설정 -->
+            <div class="api-setting" x-data="{ mode: '{{ settings.code_gen_mode }}' }">
+                <h3>💻 코드 생성 API</h3>
+                
+                <div class="form-group">
+                    <label>API 모드</label>
+                    <div class="grid">
+                        <label>
+                            <input type="radio" name="code_gen_mode" value="paid" x-model="mode">
+                            유료 (Claude API)
+                        </label>
+                        <label>
+                            <input type="radio" name="code_gen_mode" value="free" x-model="mode">
+                            무료 (LocalAI)
+                        </label>
+                    </div>
+                </div>
+                
+                <div x-show="mode === 'paid'">
+                    <label for="claude_api_key">
+                        Claude API Key
+                        <input type="password" id="claude_api_key" name="claude_api_key" placeholder="sk-ant-...">
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/claude"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        API 키 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+                
+                <div x-show="mode === 'free'">
+                    <label for="local_code_url">
+                        LocalAI URL
+                        <input type="text" id="local_code_url" name="local_code_url" value="{{ settings.local_code_url }}">
+                        <small>LocalAI API 주소 (기본값: http://localhost:8080/v1)</small>
+                    </label>
+                    <button type="button" class="secondary outline"
+                            hx-get="/settings/test/localai"
+                            hx-swap="outerHTML"
+                            hx-target="next .api-test-result">
+                        연결 테스트
+                    </button>
+                    <div class="api-test-result"></div>
+                </div>
+            </div>
+            
+            <div class="grid" style="margin-top: 2rem;">
+                <div>
+                    <button type="submit" class="primary">설정 저장</button>
+                </div>
+                <div>
+                    <a href="/" role="button" class="secondary outline">홈으로</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // API 테스트 결과 처리
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.classList.contains('api-test-result')) {
+            const response = JSON.parse(event.detail.xhr.responseText);
+            
+            let resultElement = document.createElement('div');
+            resultElement.classList.add('api-test-result');
+            
+            if (response.status === 'success') {
+                resultElement.classList.add('message', 'success');
+                resultElement.textContent = response.message;
+            } else {
+                resultElement.classList.add('message', 'error');
+                resultElement.textContent = response.message;
+            }
+            
+            event.detail.target.replaceWith(resultElement);
+        }
+    });
+</script>
+{% endblock %} 
