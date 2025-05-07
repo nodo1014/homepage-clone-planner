@@ -9,7 +9,7 @@ import json
 import logging
 from pathlib import Path
 from fastapi import Request, Form, BackgroundTasks, HTTPException
-from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
+from fastapi.responses import FileResponse, RedirectResponse, JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 # 내부 모듈 임포트
@@ -20,6 +20,68 @@ from src.app_config import DOTENV_PATH, EMAIL_TEMPLATE_PATH
 from src.utils.task_manager import get_task_status
 from src.export.export_manager import ExportManager
 from src.export.email_sender import EmailSender, send_analysis_results
+
+# 안전한 템플릿 응답 헬퍼 함수 추가
+def safe_template_response(request, template_name, context):
+    """
+    템플릿 객체가 None인 경우에도 안전하게 템플릿 응답을 반환하는 헬퍼 함수
+    
+    Args:
+        request: FastAPI 요청 객체
+        template_name: 템플릿 파일 이름
+        context: 템플릿 렌더링 컨텍스트
+        
+    Returns:
+        HTMLResponse: 렌더링된 HTML 응답
+    """
+    from fastapi.templating import Jinja2Templates
+    from src.app_config import templates_dir
+    
+    # 글로벌 템플릿 객체 사용 시도
+    global templates
+    
+    if templates is not None:
+        try:
+            return templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"글로벌 템플릿 렌더링 오류: {str(e)}")
+    
+    # app.state.templates에서 템플릿 객체 가져오기 시도
+    from src.app_config import app
+    if hasattr(app, 'state') and hasattr(app.state, 'templates') and app.state.templates is not None:
+        try:
+            return app.state.templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"app.state.templates 렌더링 오류: {str(e)}")
+    
+    # app.templates에서 템플릿 객체 가져오기 시도
+    if hasattr(app, 'templates') and app.templates is not None:
+        try:
+            return app.templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"app.templates 렌더링 오류: {str(e)}")
+    
+    # 임시 템플릿 객체 생성
+    try:
+        logger.warning(f"템플릿 객체 생성 및 렌더링: {template_name}")
+        temp_templates = Jinja2Templates(directory=str(templates_dir))
+        return temp_templates.TemplateResponse(template_name, context)
+    except Exception as e:
+        logger.error(f"임시 템플릿 객체 렌더링 오류: {str(e)}")
+        # 단순 HTML 오류 페이지 반환
+        error_html = f"""
+        <!DOCTYPE html>
+        <html>
+            <head><title>오류 발생</title></head>
+            <body>
+                <h1>오류가 발생했습니다</h1>
+                <p>죄송합니다. 페이지 렌더링 중 오류가 발생했습니다.</p>
+                <p>오류 메시지: {str(e)}</p>
+                <p><a href="/">홈으로 돌아가기</a></p>
+            </body>
+        </html>
+        """
+        return HTMLResponse(content=error_html, status_code=500)
 
 # 로거 설정
 logger = logging.getLogger(__name__)

@@ -21,6 +21,68 @@ from src.utils.task_manager import create_task, get_task_status, update_task_sta
 # 로거 설정
 logger = logging.getLogger(__name__)
 
+# 안전한 템플릿 응답 헬퍼 함수 추가
+def safe_template_response(request, template_name, context):
+    """
+    템플릿 객체가 None인 경우에도 안전하게 템플릿 응답을 반환하는 헬퍼 함수
+    
+    Args:
+        request: FastAPI 요청 객체
+        template_name: 템플릿 파일 이름
+        context: 템플릿 렌더링 컨텍스트
+        
+    Returns:
+        HTMLResponse: 렌더링된 HTML 응답
+    """
+    from fastapi.templating import Jinja2Templates
+    from src.app_config import templates_dir
+    
+    # 글로벌 템플릿 객체 사용 시도
+    global templates
+    
+    if templates is not None:
+        try:
+            return templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"글로벌 템플릿 렌더링 오류: {str(e)}")
+    
+    # app.state.templates에서 템플릿 객체 가져오기 시도
+    from src.app_config import app
+    if hasattr(app, 'state') and hasattr(app.state, 'templates') and app.state.templates is not None:
+        try:
+            return app.state.templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"app.state.templates 렌더링 오류: {str(e)}")
+    
+    # app.templates에서 템플릿 객체 가져오기 시도
+    if hasattr(app, 'templates') and app.templates is not None:
+        try:
+            return app.templates.TemplateResponse(template_name, context)
+        except Exception as e:
+            logger.error(f"app.templates 렌더링 오류: {str(e)}")
+    
+    # 임시 템플릿 객체 생성
+    try:
+        logger.warning(f"템플릿 객체 생성 및 렌더링: {template_name}")
+        temp_templates = Jinja2Templates(directory=str(templates_dir))
+        return temp_templates.TemplateResponse(template_name, context)
+    except Exception as e:
+        logger.error(f"임시 템플릿 객체 렌더링 오류: {str(e)}")
+        # 단순 HTML 오류 페이지 반환
+        error_html = f"""
+        <!DOCTYPE html>
+        <html>
+            <head><title>오류 발생</title></head>
+            <body>
+                <h1>오류가 발생했습니다</h1>
+                <p>죄송합니다. 페이지 렌더링 중 오류가 발생했습니다.</p>
+                <p>오류 메시지: {str(e)}</p>
+                <p><a href="/">홈으로 돌아가기</a></p>
+            </body>
+        </html>
+        """
+        return HTMLResponse(content=error_html, status_code=500)
+
 # 웹 라우트 등록
 def register_web_routes(app):
     """웹 인터페이스 라우트 등록"""
@@ -36,47 +98,31 @@ def register_web_routes(app):
         logger.info(f"templates 객체: {templates}")
         
         try:
-            # 먼저 기본 템플릿 사용 시도
-            if templates is not None:
-                return templates.TemplateResponse(
-                    "index.html",
-                    {
-                        "request": request,
-                        "title": "홈페이지 클론 기획서 생성기"
-                    }
-                )
-            # 실패하면 app에서 템플릿 가져오기 시도
-            elif hasattr(app, 'templates') and app.templates is not None:
-                logger.info("app.templates 사용")
-                return app.templates.TemplateResponse(
-                    "index.html",
-                    {
-                        "request": request,
-                        "title": "홈페이지 클론 기획서 생성기"
-                    }
-                )
-            # 마지막으로 Jinja2Templates 직접 생성
-            else:
-                logger.warning("템플릿 객체가 없어 새로 생성합니다")
-                from fastapi.templating import Jinja2Templates
-                from src.app_config import templates_dir
-                local_templates = Jinja2Templates(directory=templates_dir)
-                return local_templates.TemplateResponse(
-                    "index.html",
-                    {
-                        "request": request,
-                        "title": "홈페이지 클론 기획서 생성기"
-                    }
-                )
+            # 안전한 템플릿 응답 함수 사용
+            return safe_template_response(
+                request,
+                "index.html",
+                {
+                    "request": request,
+                    "title": "홈페이지 클론 기획서 생성기"
+                }
+            )
         except Exception as e:
             logger.error(f"템플릿 렌더링 오류: {str(e)}")
-            return JSONResponse(
-                content={
-                    "error": "템플릿 렌더링 오류",
-                    "detail": str(e)
-                },
-                status_code=500
-            )
+            # 단순 HTML 오류 페이지 반환
+            error_html = f"""
+            <!DOCTYPE html>
+            <html>
+                <head><title>오류 발생</title></head>
+                <body>
+                    <h1>오류가 발생했습니다</h1>
+                    <p>죄송합니다. 페이지 렌더링 중 오류가 발생했습니다.</p>
+                    <p>오류 메시지: {str(e)}</p>
+                    <p><a href="/">홈으로 돌아가기</a></p>
+                </body>
+            </html>
+            """
+            return HTMLResponse(content=error_html, status_code=500)
     
     @app.post("/analyze", response_class=HTMLResponse, tags=["웹"])
     async def analyze(
@@ -115,7 +161,8 @@ def register_web_routes(app):
             
         except Exception as e:
             logger.error(f"분석 요청 처리 오류: {str(e)}")
-            return templates.TemplateResponse(
+            return safe_template_response(
+                request,
                 "error.html",
                 {
                     "request": request,
@@ -136,7 +183,8 @@ def register_web_routes(app):
         task = get_task_status(task_id)
         
         if not task:
-            return templates.TemplateResponse(
+            return safe_template_response(
+                request,
                 "error.html",
                 {
                     "request": request,
@@ -145,7 +193,8 @@ def register_web_routes(app):
                 }
             )
             
-        return templates.TemplateResponse(
+        return safe_template_response(
+            request,
             "status.html",
             {
                 "request": request,
@@ -193,7 +242,8 @@ def register_web_routes(app):
                 task = get_task_status(task_id)
         
         if not task:
-            return templates.TemplateResponse(
+            return safe_template_response(
+                request,
                 "error.html",
                 {
                     "request": request,
@@ -296,7 +346,8 @@ def register_web_routes(app):
             logger.info(f"- 접근성 분석: {result_data['has_accessibility']}")
             
             # 결과 페이지 렌더링
-            return templates.TemplateResponse(
+            return safe_template_response(
+                request,
                 "results.html",
                 {
                     "request": request,
@@ -308,7 +359,8 @@ def register_web_routes(app):
             
         except Exception as e:
             logger.error(f"결과 페이지 렌더링 중 오류 발생: {str(e)}")
-            return templates.TemplateResponse(
+            return safe_template_response(
+                request,
                 "error.html",
                 {
                     "request": request,
@@ -324,7 +376,8 @@ def register_web_routes(app):
         
         서비스 소개 및 사용법 페이지를 제공합니다.
         """
-        return templates.TemplateResponse(
+        return safe_template_response(
+            request,
             "about.html",
             {
                 "request": request,
@@ -341,7 +394,8 @@ def register_web_routes(app):
         """
         # DB에서 최근 작업 목록 가져오기
         
-        return templates.TemplateResponse(
+        return safe_template_response(
+            request,
             "dashboard.html",
             {
                 "request": request,
